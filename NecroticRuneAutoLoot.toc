@@ -1,0 +1,7 @@
+## Interface: 11506
+## Title: Nectrotic Rune Autoloot
+## Version: 1.0.0
+## Author: CerealKiller
+## DefaultState: enabled
+
+NecroticRuneAutoLoot.lua
