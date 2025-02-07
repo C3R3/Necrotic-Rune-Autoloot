@@ -1,11 +1,12 @@
 -----------------------------
 -- Necrotic Rune Autolooter --
 -- Author: Nathan Loosevelt --
--- Version: 1.1             --
+-- Version: 1.2             --
 -----------------------------
 
 local addonName, addon = ...
 local AutoLootEnabled = true -- Default to enabled
+local RollChoices = {} -- Store user's roll choices
 
 -- List of item IDs to auto-need
 local AutoLootItems = {
@@ -38,6 +39,7 @@ local function onEvent(self, event, rollId, ...)
                 if AutoLootItems[itemID] then
                     print("|cff00ff00[Necrotic Rune Autolooter] Rolling NEED on item ID: " .. itemID .. "|r")
                     RollOnLoot(rollId, 1) -- Always Need for listed items
+                    RollChoices[rollId] = 1 -- Store that we chose Need
                 else
                     print("|cffff0000[Necrotic Rune Autolooter] Not rolling on item ID: " .. itemID .. " (not in list)|r")
                 end
@@ -47,9 +49,13 @@ local function onEvent(self, event, rollId, ...)
         else
             print("|cffff9900[Necrotic Rune Autolooter] ERROR: No item link found for roll ID: " .. rollId .. "|r")
         end
+
     elseif event == "CONFIRM_LOOT_ROLL" then
-        ConfirmLootRoll(rollId, 1) -- Auto-confirm BoP loot
-        StaticPopup_Hide("CONFIRM_LOOT_ROLL") -- Hides the confirmation popup
+        -- Only confirm Need if we actually auto-selected Need
+        if RollChoices[rollId] == 1 then
+            ConfirmLootRoll(rollId, 1)
+            StaticPopup_Hide("CONFIRM_LOOT_ROLL") -- Hide the confirmation popup
+        end
     end
 end
 
